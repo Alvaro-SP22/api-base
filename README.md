@@ -33,7 +33,7 @@ $ npm run start:prod
 
 Cualquier archivo que coincida con la Expresión Regular \*.entity será incluido en una migración.
 Las migraciones toman los datos de las entidades para poder generar los archivos.
-Para que toda modificación que se realice en uno o varios archivos de \*entity sujan efecto debe generarse una migración y ejecutarla
+Para que toda modificación que se realice en uno o varios archivos de \*.entity surjan efecto debe generarse una migración y ejecutarla
 
 - Cree o actualice su archivo \*.entity conforme a los ejemplos de user.entity
 - Correr el comando
