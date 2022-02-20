@@ -1,0 +1,16 @@
+{
+    "type": "mysql",
+    "username": "root",
+    "password": "alvaro",
+    "host": "localhost",
+    "port": 3306,
+    "synchronize": false,
+    "database": "api_auth",
+    "entities": ["src/**/**/*.entity{.ts,.js}"],
+    "migrations": ["src/database/migrations/*{.ts,.js}"],
+    "migrationsTableName": "migrations_history",
+    "migrationsRun": true,
+    "cli":{
+        "migrationsDir": "src/database/migrations"
+    }
+}
