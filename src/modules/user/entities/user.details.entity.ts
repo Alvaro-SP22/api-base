@@ -12,6 +12,10 @@ export class UserDetails extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @PrimaryGeneratedColumn('uuid')
+  @Column({ unique: true })
+  uuid: string;
+
   @Column({ type: 'varchar', unique: true, length: 50, nullable: true })
   name: string;
 

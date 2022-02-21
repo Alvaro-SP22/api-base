@@ -18,6 +18,10 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @PrimaryGeneratedColumn('uuid')
+  @Column({ unique: true })
+  uuid: string;
+
   @Column({ type: 'varchar', unique: true, length: 25, nullable: false })
   username: string;
 

@@ -15,6 +15,10 @@ export class Role extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @PrimaryGeneratedColumn('uuid')
+  @Column({ unique: true })
+  uuid: string;
+
   @Column({ type: 'varchar', length: 20, nullable: false })
   name: string;
 
