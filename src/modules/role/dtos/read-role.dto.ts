@@ -5,9 +5,14 @@ import { IsNumber, IsString, MaxLength } from 'class-validator';
 @Exclude()
 export class ReadRoleDto {
   @ApiProperty()
-  @Expose({ name: 'indentificador' })
+  @Exclude()
   @IsNumber()
   readonly id: number;
+
+  @ApiProperty()
+  @Expose()
+  @IsString()
+  readonly uuid: string;
 
   @ApiProperty()
   @Expose()

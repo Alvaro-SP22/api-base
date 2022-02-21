@@ -1,9 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 @Exclude()
 export class ReadUserDetailDto {
+  @ApiProperty()
+  @Exclude()
+  @IsNumber()
+  readonly id: number;
+
+  @ApiProperty()
+  @Expose()
+  @IsString()
+  readonly uuid: string;
+
   @ApiProperty()
   @Expose()
   @IsString()
