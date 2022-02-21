@@ -8,6 +8,7 @@ import { Role } from '../entities/role.entity';
 import { RoleRepository } from '../repositories/role.repository';
 import { CreateRoleDto, ReadRoleDto, UpdateRoleDto } from '../dtos/index';
 import { plainToClass } from 'class-transformer';
+import { status } from 'src/shared/entity-status.enum';
 
 @Injectable()
 export class RoleService {
@@ -16,13 +17,13 @@ export class RoleService {
     private readonly _roleRepository: RoleRepository,
   ) {}
 
-  async get(id: number): Promise<ReadRoleDto> {
-    if (!id) {
+  async get(roleUuid: string): Promise<ReadRoleDto> {
+    if (!roleUuid) {
       throw new BadRequestException('Se debe enviar un ID');
     }
 
-    const role = await this._roleRepository.findOne(id, {
-      where: { status: 'ACTIVE' },
+    const role = await this._roleRepository.findOne({
+      where: { status: status.ACTIVE, uuid: roleUuid },
     });
 
     if (!role) {
@@ -34,7 +35,7 @@ export class RoleService {
 
   async getAll(): Promise<ReadRoleDto[]> {
     const roles = await this._roleRepository.find({
-      where: { status: 'ACTIVE' },
+      where: { status: status.ACTIVE },
     });
 
     if (!roles) {
@@ -50,11 +51,11 @@ export class RoleService {
   }
 
   async update(
-    roleId: number,
+    roleUuid: string,
     role: Partial<UpdateRoleDto>,
   ): Promise<ReadRoleDto> {
-    const foundRole = await this._roleRepository.findOne(roleId, {
-      where: { status: 'ACTIVE' },
+    const foundRole = await this._roleRepository.findOne({
+      where: { status: status.ACTIVE, uuid: roleUuid },
     });
 
     if (!foundRole) {
@@ -68,15 +69,18 @@ export class RoleService {
     return plainToClass(ReadRoleDto, updatedRole);
   }
 
-  async delete(id: number): Promise<void> {
-    const roleExist = await this._roleRepository.findOne(id, {
-      where: { status: 'ACTIVE' },
+  async delete(roleUuid: string): Promise<void> {
+    const roleExist = await this._roleRepository.findOne({
+      where: { status: status.ACTIVE, uuid: roleUuid },
     });
 
     if (!roleExist) {
       throw new NotFoundException();
     }
 
-    await this._roleRepository.update(id, { status: 'INACTIVE' });
+    await this._roleRepository.update(
+      { uuid: roleUuid },
+      { status: status.INACTIVE },
+    );
   }
 }

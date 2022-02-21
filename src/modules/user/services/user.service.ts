@@ -20,13 +20,13 @@ export class UserService {
     private readonly _roleRepository: RoleRepository,
   ) {}
 
-  async get(id: number): Promise<ReadUserDto> {
-    if (!id) {
-      throw new BadRequestException('Se debe enviar un ID');
+  async get(userUuid: string): Promise<ReadUserDto> {
+    if (!userUuid) {
+      throw new BadRequestException('Se debe enviar un UUID');
     }
 
-    const user = await this._userRepository.findOne(id, {
-      where: { status: status.ACTIVE },
+    const user = await this._userRepository.findOne({
+      where: { status: status.ACTIVE, uuid: userUuid },
     });
 
     if (!user) {
@@ -48,9 +48,9 @@ export class UserService {
     return users.map((user: User) => plainToClass(ReadUserDto, user));
   }
 
-  async update(userId: number, user: UpdateUserDto): Promise<ReadUserDto> {
-    const foundUSer = await this._userRepository.findOne(userId, {
-      where: { status: 'ACTIVE' },
+  async update(userUuid: string, user: UpdateUserDto): Promise<ReadUserDto> {
+    const foundUSer = await this._userRepository.findOne({
+      where: { status: 'ACTIVE', uuid: userUuid },
     });
 
     if (!foundUSer) {
@@ -62,29 +62,32 @@ export class UserService {
     return plainToClass(ReadUserDto, updatedUser);
   }
 
-  async delete(userId: number): Promise<void> {
-    const userExist = await this._userRepository.findOne(userId, {
-      where: { status: status.ACTIVE },
+  async delete(userUuid: string): Promise<void> {
+    const userExist = await this._userRepository.findOne({
+      where: { status: status.ACTIVE, uuid: userUuid },
     });
 
     if (!userExist) {
       throw new NotFoundException();
     }
 
-    await this._userRepository.update(userId, { status: status.INACTIVE });
+    await this._userRepository.update(
+      { uuid: userUuid },
+      { status: status.INACTIVE },
+    );
   }
 
-  async setRoleToUser(userId: number, roleId: number): Promise<boolean> {
-    const userExist = await this._userRepository.findOne(userId, {
-      where: { status: status.ACTIVE },
+  async setRoleToUser(userUuid: string, roleUuid: string): Promise<boolean> {
+    const userExist = await this._userRepository.findOne({
+      where: { status: status.ACTIVE, uuid: userUuid },
     });
 
     if (!userExist) {
       throw new NotFoundException('No existe el usuario');
     }
 
-    const roleExist = await this._roleRepository.findOne(roleId, {
-      where: { status: status.ACTIVE },
+    const roleExist = await this._roleRepository.findOne({
+      where: { status: status.ACTIVE, uuid: roleUuid },
     });
 
     if (!roleExist) {

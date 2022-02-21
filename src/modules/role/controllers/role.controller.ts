@@ -4,7 +4,7 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
   UseGuards,
@@ -23,9 +23,11 @@ import { Roles } from '../decorators/role.decorator';
 export class RoleController {
   constructor(private readonly _roleService: RoleService) {}
 
-  @Get(':roleId')
-  getRole(@Param('roleId', ParseIntPipe) roleId: number): Promise<ReadRoleDto> {
-    return this._roleService.get(roleId);
+  @Get(':roleUuid')
+  getRole(
+    @Param('roleUuid', ParseUUIDPipe) roleUuid: string,
+  ): Promise<ReadRoleDto> {
+    return this._roleService.get(roleUuid);
   }
 
   @Get()
@@ -34,24 +36,24 @@ export class RoleController {
   }
 
   @Post()
-  createUSer(@Body() role: CreateRoleDto): Promise<ReadRoleDto> {
+  createRole(@Body() role: CreateRoleDto): Promise<ReadRoleDto> {
     return this._roleService.create(role);
   }
 
-  @Patch(':roleId')
   @Roles(RoleType.ADMIN)
   @UseGuards(AuthGuard(), RoleGuard)
+  @Patch(':roleUuid')
   updateUSer(
-    @Param('roleId', ParseIntPipe) roleId: number,
+    @Param('roleUuid', ParseUUIDPipe) roleUuid: string,
     @Body() role: Partial<UpdateRoleDto>,
   ) {
-    return this._roleService.update(roleId, role);
+    return this._roleService.update(roleUuid, role);
   }
 
-  @Delete(':roleId')
+  @Delete(':roleUuid')
   @Roles(RoleType.ADMIN)
   @UseGuards(AuthGuard(), RoleGuard)
-  deleteRole(@Param('roleId', ParseIntPipe) roleId: number) {
-    return this._roleService.delete(roleId);
+  deleteRole(@Param('roleUuid', ParseUUIDPipe) roleUuid: string) {
+    return this._roleService.delete(roleUuid);
   }
 }

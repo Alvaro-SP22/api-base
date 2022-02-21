@@ -4,7 +4,7 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
   UseGuards,
@@ -24,9 +24,11 @@ import { UserService } from '../services/user.service';
 export class UserController {
   constructor(private readonly _userService: UserService) {}
 
-  @Get(':userId')
-  getUser(@Param('userId', ParseIntPipe) userId: number): Promise<ReadUserDto> {
-    return this._userService.get(userId);
+  @Get(':userUuid')
+  getUser(
+    @Param('userUuid', ParseUUIDPipe) userUuid: string,
+  ): Promise<ReadUserDto> {
+    return this._userService.get(userUuid);
   }
 
   @Get()
@@ -34,29 +36,29 @@ export class UserController {
     return this._userService.getAll();
   }
 
-  @Patch(':userId')
+  @Patch(':userUuid')
   updateUSer(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userUuid', ParseUUIDPipe) userUuid: string,
     @Body() user: UpdateUserDto,
   ) {
-    return this._userService.update(userId, user);
+    return this._userService.update(userUuid, user);
   }
 
-  @Delete(':userId')
   @Roles(RoleType.ADMIN)
   @UseGuards(AuthGuard(), RoleGuard)
+  @Delete(':userUuid')
   async deleteUser(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userUuid', ParseUUIDPipe) userUuid: string,
   ): Promise<void> {
-    return this._userService.delete(userId);
+    return this._userService.delete(userUuid);
   }
 
-  @Post('setRole/:userId/:roleId')
   @Roles(RoleType.ADMIN)
   @UseGuards(AuthGuard(), RoleGuard)
+  @Post('setRole/:userUuid/:roleUuid')
   async setRoleToUser(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Param('roleId', ParseIntPipe) roleId: number,
+    @Param('userUuid', ParseUUIDPipe) userId: string,
+    @Param('roleUuid', ParseUUIDPipe) roleId: string,
   ): Promise<boolean> {
     return this._userService.setRoleToUser(userId, roleId);
   }
